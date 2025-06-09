@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pagapoco - @ViewData["Title"]</title>
+    <link rel="icon" href="~/logoApp.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/header.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/menu.css" asp-append-version="true" /> <!-- Menú CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <!-- Header con gradiente -->
+    <header class="pp-main-header">
+        <!-- Logo como botón -->
+        <button class="pp-logo-button">
+            <img src="~/assets/images/header/logo_header.svg" class="pp-header-logo">
+        </button>
+
+        <!-- Barra de búsqueda -->
+        <div class="pp-search-container">
+            <input type="text" placeholder="Buscar tu publicación" class="pp-search-input">
+            <img src="~/assets/images/header/searchBar.svg" class="pp-search-icon">
+        </div>
+
+        <!-- Botones derecho -->
+        <div class="pp-header-buttons">
+            <img src="~/assets/images/header/boton_registrar.svg" class="pp-button-img">
+            <img src="~/assets/images/header/boton_ingresar.svg" class="pp-button-img">
+        </div>
+    </header>
+
+    <!-- Menú rectangular blanco -->
+    <div class="pp-white-bar">
+        <div class="pp-buttons-container">
+            <img src="~/assets/images/menu/bot_city.svg" class="pp-menu-button">
+            <img src="~/assets/images/menu/bot_categories.svg" class="pp-menu-button">
+            <img src="~/assets/images/menu/bot_mysale.svg" class="pp-menu-button">
+            <img src="~/assets/images/menu/bot_sale.svg" class="pp-menu-button">
+            <img src="~/assets/images/menu/bot_favorites.svg" class="pp-menu-button">
+            <img src="~/assets/images/menu/bot_notif.svg" class="pp-menu-button">
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="container">
+        @RenderBody()
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2025 - DHJLM Coder - <a asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
