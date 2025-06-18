@@ -1,11 +1,7 @@
 var builder = WebApplication.CreateBuilder(args);
 
-
 // Add services to the container.
-builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
-builder.Services.AddHttpsRedirection(options => {
-    options.HttpsPort = 443; // Puerto estándar HTTPS
-});
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
@@ -25,7 +21,7 @@ app.UseAuthorization();
 app.MapStaticAssets();
 
 app.MapControllerRoute(
-    name: "paginita2",
+    name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 

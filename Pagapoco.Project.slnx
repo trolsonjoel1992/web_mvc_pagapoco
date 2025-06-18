@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Pagapoco.Core.Entidades/Pagapoco.Core.csproj" />
+  <Project Path="Pagapoco.Web.MVC/Pagapoco.Web.MVC.csproj" />
+</Solution>

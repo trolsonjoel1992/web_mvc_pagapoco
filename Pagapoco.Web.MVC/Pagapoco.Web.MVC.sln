@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36121.58 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pagapoco.Web.MVC", "Pagapoco.Web.MVC.csproj", "{BD5F748E-0F87-4E86-A7F3-22E415C764C3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BD5F748E-0F87-4E86-A7F3-22E415C764C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD5F748E-0F87-4E86-A7F3-22E415C764C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD5F748E-0F87-4E86-A7F3-22E415C764C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD5F748E-0F87-4E86-A7F3-22E415C764C3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D4F97BDB-CEFB-4DF8-A572-70761808B5C9}
+	EndGlobalSection
+EndGlobal
