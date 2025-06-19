@@ -50,7 +50,7 @@ CREATE TABLE Bike (
   EngineDisplacement NVARCHAR(50) NOT NULL,
   KilometersDriven INT NOT NULL,
   EnginePower INT NOT NULL,
-  WheelSize NVARCHAR(50) NOT NULL
+  WheelSize NVARCHAR(4) NOT NULL
 );
 
 -- Parts (Subclass)

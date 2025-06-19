@@ -9,6 +9,8 @@ public class User
     public string Email { get; set; } = null!;
     public string Phone { get; set; } = null!;
     public string City { get; set; } = null!;
+    public bool IsDeleted { get; set; } = false;
+
 
     // Relaciones de navegación
     public ICollection<Publication> Publications { get; set; } = new List<Publication>();

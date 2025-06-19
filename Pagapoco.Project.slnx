@@ -1,4 +1,6 @@
 <Solution>
   <Project Path="Pagapoco.Core.Entidades/Pagapoco.Core.csproj" />
+  <Project Path="Pagapoco.Infraestructure/Pagapoco.Infraestructure.csproj" Id="f23a8480-cca7-41f2-9b53-653aeb98c305" />
+  <Project Path="Pagapoco.Service/Pagapoco.Service.csproj" />
   <Project Path="Pagapoco.Web.MVC/Pagapoco.Web.MVC.csproj" />
 </Solution>

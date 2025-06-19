@@ -9,7 +9,8 @@ public abstract class Publication
     public string City { get; set; } = null!;
     public bool IsPremium { get; set; }
     public string Type { get; set; } = null!;
-    
+    public bool IsPaused { get; set; } = false;
+
     // Relación con el usuario que publica
     public Guid UserId { get; set; }
     public User User { get; set; } = null!;

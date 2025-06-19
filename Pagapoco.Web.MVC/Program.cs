@@ -1,29 +1,45 @@
+using Microsoft.EntityFrameworkCore;
+using Pagapoco.Application.Services;
+using Pagapoco.Core.Interfaces;
+using Pagapoco.Infrastructure.Data;
+using System;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+//  Configurar DbContext con tu cadena de conexión
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+//  Inyectar tus servicios
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPublicationService, PublicationService>();
+builder.Services.AddScoped<IQuestionService, QuestionService>();
+builder.Services.AddScoped<IAnswerService, AnswerService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IImageService, ImageService>();
+
+//  Agregar soporte para MVC/Razor
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+//  Middlewares
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+
 app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapStaticAssets();
-
+//  Rutas
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
-
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
