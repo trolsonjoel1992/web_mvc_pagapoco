@@ -13,9 +13,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 //  Inyectar tus servicios
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPublicationService, PublicationService>();
-builder.Services.AddScoped<IQuestionService, QuestionService>();
-builder.Services.AddScoped<IAnswerService, AnswerService>();
-builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 
 //  Agregar soporte para MVC/Razor

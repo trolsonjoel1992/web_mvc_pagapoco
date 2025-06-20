@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Pagapoco.Core.Entities;
 using Pagapoco.Core.Interfaces;
+using Pagapoco.Infrastructure.Data;
 using System;
 
 namespace Pagapoco.Application.Services;

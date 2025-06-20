@@ -23,5 +23,5 @@ public interface IUserService
     Task<IEnumerable<Publication>> GetUserPublicationsAsync(Guid userId);
 
     /// Retorna las notificaciones vinculadas a un usuario.
-    Task<IEnumerable<Notification>> GetUserNotificationsAsync(Guid userId);
+    
 }

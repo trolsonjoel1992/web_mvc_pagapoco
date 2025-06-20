@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Pagapoco.Core.Entities;
 using Pagapoco.Core.Interfaces;
+using Pagapoco.Infrastructure.Data;
 using System;
 
 namespace Pagapoco.Application.Services;
@@ -22,9 +23,6 @@ public class UserService : IUserService
 
     public async Task<IEnumerable<Publication>> GetUserPublicationsAsync(Guid userId)
         => await _context.Publications.Where(p => p.UserId == userId).ToListAsync();
-
-    public async Task<IEnumerable<Notification>> GetUserNotificationsAsync(Guid userId)
-        => await _context.Notifications.Where(n => n.UserId == userId).ToListAsync();
 
     public async Task DeleteByIdAsync(Guid userId, bool softDelete = true)
     {

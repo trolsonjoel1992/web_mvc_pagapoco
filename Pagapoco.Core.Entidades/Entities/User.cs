@@ -14,8 +14,5 @@ public class User
 
     // Relaciones de navegación
     public ICollection<Publication> Publications { get; set; } = new List<Publication>();
-    public ICollection<Question> Queries { get; set; } = new List<Question>();
-    public ICollection<Answer> Responses { get; set; } = new List<Answer>();
-    public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
-
+    
 }
