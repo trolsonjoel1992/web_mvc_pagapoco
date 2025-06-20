@@ -6,9 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Pagapoco.Core.Entidades\Pagapoco.Core.csproj" />
-    <ProjectReference Include="..\Pagapoco.Infraestructure\Pagapoco.Infraestructure.csproj" />
-  </ItemGroup>
-
 </Project>

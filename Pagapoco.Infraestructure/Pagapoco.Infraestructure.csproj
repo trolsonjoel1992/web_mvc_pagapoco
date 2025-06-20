@@ -18,8 +18,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Pagapoco.Core.Entidades\Pagapoco.Core.csproj" />
-  </ItemGroup>
-
 </Project>
