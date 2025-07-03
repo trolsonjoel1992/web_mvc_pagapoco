@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Pagapoco.Core.Entities;
-using Pagapoco.Core.Interfaces;
+using Pagapoco.Services.Interfaces;
 using Pagapoco.Infrastructure.Data;
 using System;
 
@@ -33,5 +33,25 @@ public class ImageService : IImageService
             _context.Images.Remove(img);
             await _context.SaveChangesAsync();
         }
+    }
+
+    public void AddImagesToPublication(Guid publicationId, Guid userId, List<string> imageUrls)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void DeleteImage(Guid imageId, Guid userId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void UpdateImage(Guid imageId, Guid userId, string? newUrl = null, string? newAltText = null, int? newOrder = null)
+    {
+        throw new NotImplementedException();
+    }
+
+    public List<Image> GetPublicationImages(Guid publicationId)
+    {
+        throw new NotImplementedException();
     }
 }

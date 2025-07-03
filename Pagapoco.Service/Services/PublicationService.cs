@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Pagapoco.Core.Entities;
-using Pagapoco.Core.Interfaces;
+using Pagapoco.Service.Interfaces;
 using Pagapoco.Infrastructure.Data;
 using System;
+
 
 namespace Pagapoco.Application.Services;
 
@@ -71,5 +72,40 @@ public class PublicationService : IPublicationService
             pub.IsPaused = isPaused;
             await _context.SaveChangesAsync();
         }
+    }
+
+    public (List<Publication> Publications, int TotalCount) GetPublicationsPaginated(int page, int pageSize)
+    {
+        throw new NotImplementedException();
+    }
+
+    public List<Publication> SearchPublications(string? city, string? publicationType)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Publication CreatePublication(Publication publication, Guid userId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Publication? GetPublicationById(Guid id, bool includeImages = true)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void UpdatePublication(Guid publicationId, Guid userId, string title, string description, decimal price)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void DeletePublication(Guid publicationId, Guid userId, bool softDelete = true)
+    {
+        throw new NotImplementedException();
+    }
+
+    public List<Publication> GetUserPublications(Guid userId)
+    {
+        throw new NotImplementedException();
     }
 }

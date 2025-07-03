@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Pagapoco.Core.Entities;
-using Pagapoco.Core.Interfaces;
+using Pagapoco.Services.Interfaces;
 using Pagapoco.Infrastructure.Data;
 using System;
 
@@ -61,5 +61,30 @@ public class UserService : IUserService
         // Email opcional si lo permitís
 
         await _context.SaveChangesAsync();
+    }
+
+    public User Register(string email, string password, string name, string phone, string city)
+    {
+        throw new NotImplementedException();
+    }
+
+    public User? Login(string email, string password)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void UpdateUser(Guid userId, string name, string phone, string city)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void DeleteUser(Guid userId, bool softDelete = true)
+    {
+        throw new NotImplementedException();
+    }
+
+    public List<Publication> GetUserPublications(Guid userId)
+    {
+        throw new NotImplementedException();
     }
 }
