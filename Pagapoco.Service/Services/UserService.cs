@@ -5,6 +5,8 @@ using Pagapoco.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Pagapoco.Application.Services;
 
@@ -98,7 +100,7 @@ public class UserService : IUserService
     // }
     */
 
-    public void UpdateUser(Guid userId, string name, string phone, string city)
+    public void UpdateUser(Guid userId, string? name, string? phone, string? city)
     {
         var existing = _context.Users.Find(userId);
         if (existing == null || existing.IsDeleted) return;
@@ -135,15 +137,52 @@ public class UserService : IUserService
         _context.SaveChanges();
     }
 
-    public User Register(string email, string password, string name, string phone, string city)
+    public User Register(string email, string password, string? name, string? phone, string? city)
     {
-        // Implementa la lógica de registro aquí
-        throw new NotImplementedException();
+        // Generar salt seguro
+        var saltBytes = RandomNumberGenerator.GetBytes(16);
+        var salt = Convert.ToBase64String(saltBytes);
+
+        // Generar hash seguro
+        var hash = HashPassword(password, saltBytes);
+
+        var user = new User
+        {
+            Id = Guid.NewGuid(),
+            Email = email,
+            Name = name,
+            Phone = phone,
+            City = city,
+            PasswordHash = Convert.ToBase64String(hash),
+            PasswordSalt = salt,
+            IsDeleted = false
+        };
+
+        _context.Users.Add(user);
+        _context.SaveChanges();
+
+        return user;
     }
 
     public User? Login(string email, string password)
     {
-        // Implementa la lógica de login aquí
-        throw new NotImplementedException();
+        var user = _context.Users.FirstOrDefault(u => u.Email == email && !u.IsDeleted);
+        if (user == null)
+            return null;
+
+        var saltBytes = Convert.FromBase64String(user.PasswordSalt);
+        var hash = HashPassword(password, saltBytes);
+
+        if (user.PasswordHash == Convert.ToBase64String(hash))
+            return user;
+
+        return null;
+    }
+
+    private static byte[] HashPassword(string password, byte[] salt)
+    {
+        // PBKDF2 con HMACSHA256 y 100.000 iteraciones
+        using var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 100_000, HashAlgorithmName.SHA256);
+        return pbkdf2.GetBytes(32); // 256 bits
     }
 }

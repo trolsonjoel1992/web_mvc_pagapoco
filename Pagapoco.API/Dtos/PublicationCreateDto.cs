@@ -1,13 +1,15 @@
+using System;
+
 namespace Pagapoco.API.Dtos
 {
     public class PublicationCreateDto
     {
-        public string Title { get; set; } = null!;
-        public string Description { get; set; } = null!;
+        public string Title { get; set; }
+        public string Description { get; set; }
         public decimal Price { get; set; }
-        public string City { get; set; } = null!;
+        public string City { get; set; }
         public bool IsPremium { get; set; }
-        public string Type { get; set; } = null!;
+        public string Type { get; set; }
         public Guid UserId { get; set; }
 
         // Vehicle y Bike
