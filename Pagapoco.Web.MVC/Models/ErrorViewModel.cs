@@ -1,4 +1,4 @@
-namespace proyecto_inicial_joel.Models
+namespace Pagapoco.Web.MVC.Models
 {
     public class ErrorViewModel
     {

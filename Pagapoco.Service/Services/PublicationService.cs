@@ -5,6 +5,7 @@ using Pagapoco.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 
 namespace Pagapoco.Application.Services;
 
@@ -151,9 +152,22 @@ public class PublicationService : IPublicationService
     // }
     */
 
-    public (List<Publication> Publications, int TotalCount) GetPublicationsPaginated(int page, int pageSize)
+    public (List<Publication> Publications, int TotalCount) GetPublicationsPaginated(int page, int pageSize, string orderBy = "Id", bool ascending = false)
     {
-        throw new NotImplementedException();
+        var query = _context.Publications
+            .Where(p => !p.IsPaused);
+
+        int total = query.Count();
+
+        // Construir la expresión de orden dinámico
+        string ordering = ascending ? orderBy : orderBy + " descending";
+        var publications = query
+            .OrderBy(ordering)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
+        return (publications, total);
     }
 
     public List<Publication> SearchPublications(string? city, string? publicationType)
