@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public interface IPublicationService
 {
     /// Obtiene publicaciones paginadas con el total de registros
-    (List<Publication> Publications, int TotalCount) GetPublicationsPaginated(int page, int pageSize);
+    (List<Publication> Publications, int TotalCount) GetPublicationsPaginated(int page, int pageSize, string orderBy = "Id", bool ascending = false);
 
     /// Busca publicaciones por ciudad y tipo (Vehicle/Bike/Part)
     List<Publication> SearchPublications(string? city, string? publicationType);
