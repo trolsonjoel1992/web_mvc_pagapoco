@@ -26,6 +26,9 @@ public interface IPublicationService
 
     /// Obtiene las publicaciones de un usuario específico
     List<Publication> GetUserPublications(Guid userId);
+
+    ///  Filtra publicaciones por tipo y filtros específicos.
+    List<Publication> FilterPublications(string type, Dictionary<string, object> filters);
 }
 //public interface IPublicationService
  //{
