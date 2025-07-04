@@ -10,5 +10,6 @@ public class Bike : Publication
     public string Transmission { get; set; } = null!;
     public string EngineDisplacement { get; set; } = null!;
     public int KilometersDriven { get; set; }
+    public int EnginePower { get; set; }
     public string WheelSize { get; set; } = null!; 
 }
