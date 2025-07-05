@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Pagapoco.Services.Interfaces;
 using Pagapoco.API.Dtos;
 using Pagapoco.Core.Entities;
+using System.Security.Claims;
 
 namespace Pagapoco.API.Controllers
 {
@@ -16,7 +18,8 @@ namespace Pagapoco.API.Controllers
             _imageService = imageService;
         }
 
-        // Obtener imágenes de una publicación
+        // Obtener imágenes de una publicación (público)
+        [AllowAnonymous]
         [HttpGet("publication/{publicationId}")]
         public ActionResult<List<Image>> GetPublicationImages(Guid publicationId)
         {
@@ -24,26 +27,41 @@ namespace Pagapoco.API.Controllers
             return Ok(images);
         }
 
-        // Agregar imágenes a una publicación
+        // Agregar imágenes a una publicación (privado)
+        [Authorize]
         [HttpPost("publication/{publicationId}/add")]
-        public IActionResult AddImagesToPublication(Guid publicationId, [FromQuery] Guid userId, [FromBody] List<string> imageUrls)
+        public IActionResult AddImagesToPublication(Guid publicationId, [FromBody] List<string> imageUrls)
         {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
+
             _imageService.AddImagesToPublication(publicationId, userId, imageUrls);
             return NoContent();
         }
 
-        // Eliminar una imagen
+        // Eliminar una imagen (privado)
+        [Authorize]
         [HttpDelete("{imageId}")]
-        public IActionResult DeleteImage(Guid imageId, [FromQuery] Guid userId)
+        public IActionResult DeleteImage(Guid imageId)
         {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
+
             _imageService.DeleteImage(imageId, userId);
             return NoContent();
         }
 
-        // Actualizar una imagen
+        // Actualizar una imagen (privado)
+        [Authorize]
         [HttpPut("{imageId}")]
-        public IActionResult UpdateImage(Guid imageId, [FromQuery] Guid userId, [FromBody] ImageUpdateDto dto)
+        public IActionResult UpdateImage(Guid imageId, [FromBody] ImageUpdateDto dto)
         {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
+
             _imageService.UpdateImage(imageId, userId, dto.Url, dto.AltText, dto.DisplayOrder);
             return NoContent();
         }

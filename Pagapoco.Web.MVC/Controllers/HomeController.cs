@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using proyecto_inicial_joel.Models;
+using Pagapoco.Web.MVC.Models;
 
-namespace proyecto_inicial_joel.Controllers
+namespace Pagapoco.Web.MVC.Controllers
 {
     public class HomeController : Controller
     {

@@ -3,7 +3,6 @@ using Pagapoco.Application.Services;
 using Pagapoco.Services.Interfaces;
 using Pagapoco.Infrastructure.Data;
 using System;
-using Pagapoco.Service.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +17,10 @@ builder.Services.AddScoped<IImageService, ImageService>();
 
 //  Agregar soporte para MVC/Razor
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+
+//  Agregar soporte para HttpClient
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
@@ -39,5 +42,6 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapRazorPages();
 
 app.Run();

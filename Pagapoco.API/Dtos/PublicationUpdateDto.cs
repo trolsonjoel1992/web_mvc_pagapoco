@@ -7,6 +7,12 @@ namespace Pagapoco.API.Dtos
         public decimal Price { get; set; }
         public string City { get; set; } = null!;
         public bool IsPremium { get; set; }
-        // Puedes agregar aquí otros campos editables si lo necesitas
+
+        // Campos específicos de repuesto
+        public string Brand { get; set; } = null!;
+        public string Model { get; set; } = null!;
+        public string Color { get; set; } = null!;
+        public string Condition { get; set; } = null!;
+        public string Compatibility { get; set; } = null!;
     }
 }

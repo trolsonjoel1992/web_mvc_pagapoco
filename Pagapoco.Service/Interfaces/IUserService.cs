@@ -6,11 +6,11 @@ using Pagapoco.Core.Entities;
 public interface IUserService
 {
     /// Registra un nuevo usuario en el sistema
-    User Register(string email, string password, string name, string phone, string city);
+    User Register(string email, string password, string? name, string? phone, string? city);
     /// Valida las credenciales y retorna el usuario si son correctas
     User? Login(string email, string password);
     /// Actualiza los datos básicos del usuario (nombre, teléfono, ciudad)
-    void UpdateUser(Guid userId, string name, string phone, string city);
+    void UpdateUser(Guid userId, string? name, string? phone, string? city);
     /// Elimina (lógica o físicamente) un usuario por su ID
     void DeleteUser(Guid userId, bool softDelete = true);
     /// Obtiene todas las publicaciones creadas por un usuario    
