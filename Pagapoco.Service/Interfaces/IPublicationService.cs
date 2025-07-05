@@ -1,55 +1,43 @@
-﻿namespace Pagapoco.Service.Interfaces;
+﻿using Pagapoco.Core.Entities;
 
-using Pagapoco.Core.Entities;
-using System.Collections.Generic;
-
-/// Contrato para el servicio de gestión de publicaciones (Vehicle, Bike, Part)
-public interface IPublicationService
+namespace Pagapoco.Services.Interfaces
 {
-    /// Obtiene publicaciones paginadas con el total de registros
-    (List<Publication> Publications, int TotalCount) GetPublicationsPaginated(int page, int pageSize, string orderBy = "Id", bool ascending = false);
+    public interface IPublicationService
+    {
+        // Crear publicación
+        Publication CreatePublication(Publication publication, Guid userId);
 
-    /// Busca publicaciones por ciudad y tipo (Vehicle/Bike/Part)
-    List<Publication> SearchPublications(string? city, string? publicationType);
+        // Obtener publicación por ID (con opción de incluir imágenes)
+        Publication? GetPublicationById(Guid id, bool includeImages = true);
 
-    /// Crea una nueva publicación (requiere usuario logueado)
-    Publication CreatePublication(Publication publication, Guid userId);
+        // Paginado
+        (List<Publication> publications, int total) GetPublicationsPaginated(int page, int pageSize);
 
-    /// Obtiene una publicación por ID
-    Publication? GetPublicationById(Guid id, bool includeImages = true);
+        // Obtener todas las publicaciones
+        List<Publication> GetAllPublications();
 
-    /// Actualiza una publicación existente (solo para el usuario creador)
-    void UpdatePublication(Guid publicationId, Guid userId, string title, string description, decimal price);
+        // Buscar publicaciones por ciudad y tipo
+        List<Publication> SearchPublications(string? city, string? publicationType);
 
-    /// Elimina una publicación (física o lógicamente)
-    void DeletePublication(Guid publicationId, Guid userId, bool softDelete = true);
+        // Actualizar publicación
+        void UpdatePublication(Guid publicationId, Guid userId, string title, string description, decimal price);
 
-    /// Obtiene las publicaciones de un usuario específico
-    List<Publication> GetUserPublications(Guid userId);
+        // Eliminar publicación (borrado lógico o físico)
+        void DeletePublication(Guid publicationId, Guid userId, bool softDelete = true);
 
-    ///  Filtra publicaciones por tipo y filtros específicos.
-    List<Publication> FilterPublications(string type, Dictionary<string, object> filters);
+        // Publicaciones de un usuario
+        List<Publication> GetUserPublications(Guid userId);
+
+        // Filtrar publicaciones por campos de partes
+        List<Publication> FilterPublications(string type, Dictionary<string, object> filters);
+
+        // Pausar publicación
+        void PausePublication(Guid publicationId);
+
+        // Activar publicación
+        void ActivatePublication(Guid publicationId);
+
+        // Alternativa genérica para pausar/activar
+        void SetPauseState(Guid publicationId, bool isPaused);
+    }
 }
-//public interface IPublicationService
- //{
- //    /// Obtiene una publicación por su ID.
- //    Task<Publication?> GetByIdAsync(Guid id);
-
-//    /// Filtra publicaciones por ciudad y/o tipo de publicación.
-//    Task<IEnumerable<Publication>> SearchAsync(string? city, string? category);
-
-//    /// Crea una nueva publicación.
-//    Task CreateAsync(Publication publication);
-
-//    /// Edita una publicación existente.
-//    Task UpdateAsync(Publication publication);
-
-//    /// Elimina permanentemente una publicación.
-//    Task DeleteAsync(Guid publicationId);
-
-//    /// Pausa una publicación sin eliminarla.
-//    Task PauseAsync(Guid publicationId);
-
-//    /// Pausa o reactiva una publicación.
-//    Task SetPauseStateAsync(Guid publicationId, bool isPaused);
-//}

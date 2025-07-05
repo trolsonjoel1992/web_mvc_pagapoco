@@ -1,10 +1,7 @@
-using System;
+using Pagapoco.Web.MVC.Models;
 
-namespace Pagapoco.Web.MVC.Models
+public class UserPublicationViewModel
 {
-    public class UserPublicationViewModel
-    {
-        public PublicationViewModel Publication { get; set; } = null!;
-        public string? MainImageUrl { get; set; }
-    }
+    public PublicationViewModel Publication { get; set; } = null!;
+    public string? MainImageUrl { get; set; }
 }

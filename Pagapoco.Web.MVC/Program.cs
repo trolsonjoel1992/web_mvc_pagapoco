@@ -3,7 +3,6 @@ using Pagapoco.Application.Services;
 using Pagapoco.Services.Interfaces;
 using Pagapoco.Infrastructure.Data;
 using System;
-using Pagapoco.Service.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

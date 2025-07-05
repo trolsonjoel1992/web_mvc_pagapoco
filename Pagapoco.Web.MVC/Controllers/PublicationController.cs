@@ -16,17 +16,40 @@ namespace Pagapoco.Web.MVC.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
+        // Listado general de publicaciones (público)
+        public async Task<IActionResult> Index()
+        {
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.GetAsync("https://localhost:5001/api/publications");
+            if (!response.IsSuccessStatusCode)
+                return View(new List<PublicationViewModel>());
+
+            var json = await response.Content.ReadAsStringAsync();
+            var publications = JsonSerializer.Deserialize<List<PublicationViewModel>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return View(publications ?? new List<PublicationViewModel>());
+        }
+
+        // Detalle de una publicación (público)
+        public async Task<IActionResult> Details(string id)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.GetAsync($"https://localhost:5001/api/publications/{id}");
+            if (!response.IsSuccessStatusCode)
+                return NotFound();
+
+            var json = await response.Content.ReadAsStringAsync();
+            var publication = JsonSerializer.Deserialize<PublicationViewModel>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return View(publication);
+        }
+
         // Muestra las publicaciones del usuario logueado
         public async Task<IActionResult> MyPublications()
         {
-            // Obtén el userId del usuario logueado (ajusta según tu lógica de autenticación)
-            var userId = HttpContext.Session.GetString("UserId"); // Ejemplo: Obtener el userId desde la sesión
+            var userId = HttpContext.Session.GetString("UserId");
             if (string.IsNullOrEmpty(userId))
                 return RedirectToAction("Login", "User");
 
             var client = _httpClientFactory.CreateClient();
-
-            // 1. Obtener publicaciones del usuario
             var response = await client.GetAsync($"https://localhost:5001/api/publications/user/{userId}");
             if (!response.IsSuccessStatusCode)
                 return View(new List<UserPublicationViewModel>());
@@ -35,12 +58,10 @@ namespace Pagapoco.Web.MVC.Controllers
             var publications = JsonSerializer.Deserialize<List<PublicationViewModel>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             var result = new List<UserPublicationViewModel>();
-
-            // 2. Para cada publicación, obtener la imagen principal
-            foreach (var pub in publications)
+            foreach (var pub in publications ?? new List<PublicationViewModel>())
             {
                 string? mainImageUrl = null;
-                var imgResponse = await client.GetAsync($"https://localhost:5001/api/images/publication/{pub.Id}");
+                var imgResponse = await client.GetAsync($"https://localhost:5001/api/images/publication/{pub.Title}"); // Cambia pub.Title por pub.Id si lo necesitas internamente
                 if (imgResponse.IsSuccessStatusCode)
                 {
                     var imgJson = await imgResponse.Content.ReadAsStringAsync();
@@ -56,6 +77,20 @@ namespace Pagapoco.Web.MVC.Controllers
             }
 
             return View(result);
+        }
+
+        // Filtro de publicaciones (público)
+        public async Task<IActionResult> Filter(string? type, string? brand, string? model, string? color, string? condition, string? compatibility)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var url = $"https://localhost:5001/api/publications/filter?type={type}&brand={brand}&model={model}&color={color}&condition={condition}&compatibility={compatibility}";
+            var response = await client.GetAsync(url);
+            if (!response.IsSuccessStatusCode)
+                return View("Index", new List<PublicationViewModel>());
+
+            var json = await response.Content.ReadAsStringAsync();
+            var publications = JsonSerializer.Deserialize<List<PublicationViewModel>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return View("Index", publications ?? new List<PublicationViewModel>());
         }
     }
 }

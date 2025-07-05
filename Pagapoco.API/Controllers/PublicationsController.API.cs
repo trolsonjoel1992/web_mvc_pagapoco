@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Pagapoco.API.Dtos;
 using Pagapoco.Core.Entities;
-using Pagapoco.Service.Interfaces;
 using Pagapoco.Services.Interfaces;
 using System.Security.Claims;
 
@@ -10,7 +9,7 @@ namespace Pagapoco.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize] // Por defecto, todos los métodos requieren JWT
+    [Authorize]
     public class PublicationsController : ControllerBase
     {
         private readonly IPublicationService _publicationService;
@@ -20,7 +19,7 @@ namespace Pagapoco.API.Controllers
             _publicationService = publicationService;
         }
 
-        // MÉTODO PÚBLICO: paginado
+        // Paginado público
         [AllowAnonymous]
         [HttpGet("paged")]
         public ActionResult GetPublicationsPaginated([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
@@ -29,22 +28,21 @@ namespace Pagapoco.API.Controllers
             return Ok(new { publications, total });
         }
 
-        // MÉTODO PÚBLICO: obtener todas las publicaciones de todos los usuarios
+        // Obtener todas las publicaciones (público)
         [AllowAnonymous]
         [HttpGet]
         public ActionResult<List<Publication>> GetAll()
         {
-            // Si tienes un método específico, úsalo. Si no, puedes usar paginado con un pageSize grande.
-            var (publications, _) = _publicationService.GetPublicationsPaginated(1, int.MaxValue);
+            var publications = _publicationService.GetAllPublications();
             return Ok(publications);
         }
 
-        // Buscar publicaciones por ciudad y tipo (protegido)
-        [AllowAnonymous] 
+        // Buscar publicaciones por ciudad y tipo (público)
+        [AllowAnonymous]
         [HttpGet("search")]
-        public ActionResult<List<Publication>> Search([FromQuery] string? city, [FromQuery] string? publicationType)
+        public ActionResult<List<Publication>> Search([FromQuery] string? city, [FromQuery] string? type)
         {
-            var result = _publicationService.SearchPublications(city, publicationType);
+            var result = _publicationService.SearchPublications(city, type);
             return Ok(result);
         }
 
@@ -58,22 +56,25 @@ namespace Pagapoco.API.Controllers
 
             var publication = new Publication
             {
-                Id = Guid.NewGuid(),
                 Title = dto.Title,
                 Description = dto.Description,
                 Price = dto.Price,
                 City = dto.City,
                 IsPremium = dto.IsPremium,
                 Type = dto.Type,
+                Brand = dto.Brand,
+                Model = dto.Model,
+                Color = dto.Color,
+                Condition = dto.Condition,
+                Compatibility = dto.Compatibility,
                 UserId = userId
-                // Agrega otros campos si es necesario
             };
             var created = _publicationService.CreatePublication(publication, userId);
             return Ok(created);
         }
 
-        // Obtener publicación por ID (protegido)
-        
+        // Obtener publicación por ID (público)
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public ActionResult<Publication?> GetById(Guid id, [FromQuery] bool includeImages = true)
         {
@@ -83,7 +84,6 @@ namespace Pagapoco.API.Controllers
             return Ok(publication);
         }
 
-        
         // Actualizar publicación (protegido)
         [HttpPut("{publicationId}")]
         public IActionResult Update(Guid publicationId, [FromBody] PublicationUpdateDto dto)
@@ -116,23 +116,14 @@ namespace Pagapoco.API.Controllers
             return Ok(publications);
         }
 
-        // Filtrar publicaciones (protegido)
+        // Filtrar publicaciones (público)
         [AllowAnonymous]
         [HttpGet("filter")]
         public ActionResult<List<Publication>> Filter(
             [FromQuery] string type,
             [FromQuery] string? brand,
             [FromQuery] string? model,
-            [FromQuery] int? year,
             [FromQuery] string? color,
-            [FromQuery] string? fuelType,
-            [FromQuery] string? transmission,
-            [FromQuery] string? engineDisplacement,
-            [FromQuery] int? kilometersDriven,
-            [FromQuery] string? version,
-            [FromQuery] int? doors,
-            [FromQuery] int? enginePower,
-            [FromQuery] string? wheelSize,
             [FromQuery] string? condition,
             [FromQuery] string? compatibility
         )
@@ -140,21 +131,38 @@ namespace Pagapoco.API.Controllers
             var filters = new Dictionary<string, object>();
             if (brand != null) filters["Brand"] = brand;
             if (model != null) filters["Model"] = model;
-            if (year != null) filters["Year"] = year;
             if (color != null) filters["Color"] = color;
-            if (fuelType != null) filters["FuelType"] = fuelType;
-            if (transmission != null) filters["Transmission"] = transmission;
-            if (engineDisplacement != null) filters["EngineDisplacement"] = engineDisplacement;
-            if (kilometersDriven != null) filters["KilometersDriven"] = kilometersDriven;
-            if (version != null) filters["Version"] = version;
-            if (doors != null) filters["Doors"] = doors;
-            if (enginePower != null) filters["EnginePower"] = enginePower;
-            if (wheelSize != null) filters["WheelSize"] = wheelSize;
             if (condition != null) filters["Condition"] = condition;
             if (compatibility != null) filters["Compatibility"] = compatibility;
 
             var result = _publicationService.FilterPublications(type, filters);
             return Ok(result);
+        }
+
+        // Pausar publicación (protegido)
+        [HttpPost("{publicationId}/pause")]
+        public IActionResult Pause(Guid publicationId)
+        {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
+
+            // Opcional: validar ownership aquí si lo deseas
+            _publicationService.PausePublication(publicationId);
+            return NoContent();
+        }
+
+        // Activar publicación (protegido)
+        [HttpPost("{publicationId}/activate")]
+        public IActionResult Activate(Guid publicationId)
+        {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            if (userIdClaim == null || !Guid.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
+
+            // Opcional: validar ownership aquí si lo deseas
+            _publicationService.ActivatePublication(publicationId);
+            return NoContent();
         }
     }
 }
