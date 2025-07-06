@@ -10,7 +10,9 @@ public class User
     public bool IsDeleted { get; set; }
     public string PasswordHash { get; set; } = null!;
     public string PasswordSalt { get; set; } = null!;
-
+     // Relaciones de navegación
+    public ICollection<Publication> Publications { get; set; } = new List<Publication>();
+    
     //public Guid Id { get; set; } = Guid.NewGuid();
 
     //public string Name { get; set; } = null!;
@@ -20,8 +22,4 @@ public class User
     //public string City { get; set; } = null!;
     //public bool IsDeleted { get; set; } = false;
 
-
-    // Relaciones de navegación
-    public ICollection<Publication> Publications { get; set; } = new List<Publication>();
-    
 }

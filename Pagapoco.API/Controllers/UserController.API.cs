@@ -54,7 +54,7 @@ namespace Pagapoco.API.Controllers
                 issuer: _configuration["Jwt:Issuer"],
                 audience: null,
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(2),
+                expires: DateTime.UtcNow.AddHours(10),
                 signingCredentials: creds
             );
 
