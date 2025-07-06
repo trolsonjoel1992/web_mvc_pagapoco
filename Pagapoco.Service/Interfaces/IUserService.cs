@@ -1,5 +1,6 @@
 ﻿namespace Pagapoco.Services.Interfaces;
 
+using Microsoft.EntityFrameworkCore;
 using Pagapoco.Core.Entities;
 
 /// Contrato para servicios relacionados con usuarios
@@ -15,6 +16,8 @@ public interface IUserService
     void DeleteUser(Guid userId, bool softDelete = true);
     /// Obtiene todas las publicaciones creadas por un usuario    
     List<Publication> GetUserPublications(Guid userId);
+    /// Obtiene un usuario por su ID único
+    User? GetById(Guid userId);
 }
 
 

@@ -28,7 +28,7 @@ namespace Pagapoco.API.Controllers
         [HttpPost("register")]
         public ActionResult<User> Register([FromBody] UserRegisterDto dto)
         {
-            var user = _userService.Register(dto.Email, dto.Password, dto.Name, dto.Phone, dto.City);
+            var user = _userService.Register(dto.Email, dto.Password, null, null, null);
             return Ok(user);
         }
 
@@ -102,5 +102,29 @@ namespace Pagapoco.API.Controllers
             var publications = _userService.GetUserPublications(userId);
             return Ok(publications);
         }
+
+        // Obtener datos del usuario (requiere JWT)
+[Authorize]
+[HttpGet("{userId}")]
+public ActionResult<User> GetUser(Guid userId)
+{
+    var userIdClaim = User.FindFirst("userId")?.Value;
+    if (userIdClaim == null || userIdClaim != userId.ToString())
+        return Forbid();
+
+    var user = _userService.GetById(userId);
+    if (user == null)
+        return NotFound();
+
+    // Opcional: puedes mapear a un DTO para no exponer PasswordHash/Salt
+    return Ok(new
+    {
+        user.Id,
+        user.Name,
+        user.Email,
+        user.Phone,
+        user.City
+    });
+}
     }
 }

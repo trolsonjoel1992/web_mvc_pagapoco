@@ -4,6 +4,11 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using System.Net.Http.Headers;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System;
 
 namespace Pagapoco.Web.MVC.Controllers
 {
@@ -36,7 +41,19 @@ namespace Pagapoco.Web.MVC.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-                // Aquí puedes guardar la sesión/cookie según tu lógica
+                var responseBody = await response.Content.ReadAsStringAsync();
+                var jsonDoc = JsonDocument.Parse(responseBody);
+                var token = jsonDoc.RootElement.GetProperty("token").GetString();
+
+                // Guardar el JWT en una cookie segura
+                Response.Cookies.Append("jwt_token", token, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTimeOffset.UtcNow.AddHours(2)
+                });
+
                 return RedirectToAction("Index", "Home");
             }
 
@@ -64,8 +81,8 @@ namespace Pagapoco.Web.MVC.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-                // Aquí puedes guardar la sesión/cookie según tu lógica
-                return RedirectToAction("Index", "Home");
+                // Opcional: podrías hacer login automático aquí
+                return RedirectToAction("Login");
             }
 
             ModelState.AddModelError("", "No se pudo registrar el usuario");
@@ -74,16 +91,37 @@ namespace Pagapoco.Web.MVC.Controllers
 
         public IActionResult Logout()
         {
-            // Limpia la sesión/cookie según tu lógica
+            // Eliminar la cookie del JWT
+            Response.Cookies.Delete("jwt_token");
             return RedirectToAction("Login");
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit()
         {
-            // Aquí deberías obtener los datos del usuario actual (por ejemplo, desde la API)
-            // y pasarlos a la vista
-            return View(/* modelo de usuario */);
+            var token = Request.Cookies["jwt_token"];
+            if (string.IsNullOrEmpty(token))
+                return RedirectToAction("Login");
+
+            // Decodificar el userId del JWT
+            var handler = new JwtSecurityTokenHandler();
+            var jwt = handler.ReadJwtToken(token);
+            var userId = jwt.Claims.FirstOrDefault(c => c.Type == "userId")?.Value;
+            if (string.IsNullOrEmpty(userId))
+                return RedirectToAction("Login");
+
+            var client = _httpClientFactory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            // Obtener datos del usuario autenticado
+            var response = await client.GetAsync($"https://localhost:5001/api/user/{userId}");
+            if (!response.IsSuccessStatusCode)
+                return RedirectToAction("Login");
+
+            var userJson = await response.Content.ReadAsStringAsync();
+            var user = JsonSerializer.Deserialize<UserEditViewModel>(userJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            return View(user);
         }
 
         [HttpPost]
@@ -92,19 +130,59 @@ namespace Pagapoco.Web.MVC.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            // Llama a la API para actualizar el usuario
-            // ...
+            var token = Request.Cookies["jwt_token"];
+            if (string.IsNullOrEmpty(token))
+                return RedirectToAction("Login");
 
-            return RedirectToAction("Index", "Home");
+            var handler = new JwtSecurityTokenHandler();
+            var jwt = handler.ReadJwtToken(token);
+            var userId = jwt.Claims.FirstOrDefault(c => c.Type == "userId")?.Value;
+            if (string.IsNullOrEmpty(userId))
+                return RedirectToAction("Login");
+
+            var client = _httpClientFactory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            // Solo enviamos los campos editables
+            var updateModel = new
+            {
+                Name = model.Name,
+                Phone = model.Phone,
+                City = model.City
+            };
+            var json = JsonSerializer.Serialize(updateModel);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PutAsync($"https://localhost:5001/api/user/{userId}", content);
+
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction("Index", "Home");
+
+            ModelState.AddModelError("", "No se pudo actualizar el usuario");
+            return View(model);
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete()
         {
-            // Llama a la API para eliminar el usuario actual
-            // ...
+            var token = Request.Cookies["jwt_token"];
+            if (string.IsNullOrEmpty(token))
+                return RedirectToAction("Login");
 
-            // Limpia la sesión/cookie si corresponde
+            var handler = new JwtSecurityTokenHandler();
+            var jwt = handler.ReadJwtToken(token);
+            var userId = jwt.Claims.FirstOrDefault(c => c.Type == "userId")?.Value;
+            if (string.IsNullOrEmpty(userId))
+                return RedirectToAction("Login");
+
+            var client = _httpClientFactory.CreateClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var response = await client.DeleteAsync($"https://localhost:5001/api/user/{userId}");
+
+            // Eliminar la cookie del JWT
+            Response.Cookies.Delete("jwt_token");
+
             return RedirectToAction("Login");
         }
     }
