@@ -1,8 +1,22 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Pagapoco.Application.Services;
+using Pagapoco.Services.Interfaces;
+using Pagapoco.Infrastructure.Data;
 using System.Text;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configuración de DbContext con la cadena de conexión de appsettings.json
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Inyección de dependencias de servicios
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPublicationService, PublicationService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 
 // Configuración JWT
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "clave-secreta-muy-segura";
@@ -26,19 +40,34 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// Habilitar CORS si tu frontend está en otro origen
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+
+// --- SWAGGER CORRECTO ---
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();
