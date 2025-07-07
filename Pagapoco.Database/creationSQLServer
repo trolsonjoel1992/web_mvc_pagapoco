@@ -14,7 +14,6 @@ CREATE TABLE [Users] (
     [PasswordSalt] NVARCHAR(512) NOT NULL
 );
 
-CREATE UNIQUE INDEX IX_Users_Email ON [Users]([Email]);
 
 -- Publications (Base class)
 CREATE TABLE [Publications] (

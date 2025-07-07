@@ -1,2 +1,10 @@
-@Pagapoco.API_HostAddress = http://localhost:5266
+@papi = http://localhost:5266
 
+### Probar registro de usuario
+POST https://localhost:5266/api/user/register
+Content-Type: application/json
+
+{
+  "email": "prueba@correo.com",
+  "password": "TestPassword123!"
+}

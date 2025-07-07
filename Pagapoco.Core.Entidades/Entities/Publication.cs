@@ -1,7 +1,10 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Pagapoco.Core.Entities
 {
+    [Table("Publications")]
+
     public class Publication
 {
     public Guid Id { get; set; }

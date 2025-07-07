@@ -1,5 +1,8 @@
-﻿namespace Pagapoco.Core.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
+namespace Pagapoco.Core.Entities;
+
+[Table("Users")]
 public class User
 {
     public Guid Id { get; set; }

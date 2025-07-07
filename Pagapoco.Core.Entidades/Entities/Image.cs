@@ -1,5 +1,9 @@
-﻿namespace Pagapoco.Core.Entities;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
+namespace Pagapoco.Core.Entities;
+
+
+[Table("Images")]
 public class Image
 {
     public Guid Id { get; set; } = Guid.NewGuid();

@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Pagapoco.Core.Entidades\Pagapoco.Core.csproj" />
+    <ProjectReference Include="..\Pagapoco.Infraestructure\Pagapoco.Infraestructure.csproj" />
     <ProjectReference Include="..\Pagapoco.Service\Pagapoco.Service.csproj" />
   </ItemGroup>
 
