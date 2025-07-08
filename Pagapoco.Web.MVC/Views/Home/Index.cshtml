@@ -2,7 +2,102 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Skeleton Loader -->
+<div id="skeleton-loader" class="row g-4">
+    @for (int i = 0; i < 6; i++)
+    {
+        <div class="col-12 col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="skeleton-img card-img-top"></div>
+                <div class="card-body">
+                    <div class="skeleton-title mb-2"></div>
+                    <div class="skeleton-text mb-1"></div>
+                    <div class="skeleton-text w-50"></div>
+                </div>
+            </div>
+        </div>
+    }
 </div>
+
+<!-- Grid de publicaciones -->
+<div id="publications-grid" class="row g-4" style="display:none;">
+    <!-- Aquí se cargarán los contenedores de publicaciones vía JS -->
+</div>
+
+<div id="loading" class="text-center my-4" style="display:none;">
+    <div class="spinner-border" role="status"></div>
+</div>
+
+@section Scripts {
+    <script>
+        let page = 1;
+        const pageSize = 12; // 3 columnas x 4 filas
+        let loading = false;
+        let allLoaded = false;
+        let hasAnyPublication = false;
+
+        function renderPublication(pub) {
+            return `
+                <div class="col-12 col-md-4">
+                    <div class="card h-100 shadow-sm">
+                        ${pub.images && pub.images.length > 0 ? `<img src="${pub.images[0].url}" class="card-img-top" alt="${pub.title}">` : ''}
+                        <div class="card-body">
+                            <h5 class="card-title">${pub.title}</h5>
+                            <p class="card-text">${pub.description ?? ''}</p>
+                            <p class="card-text fw-bold">$${pub.price}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function loadPublications() {
+            if (loading || allLoaded) return;
+            loading = true;
+            if (!hasAnyPublication) {
+                document.getElementById('skeleton-loader').style.display = 'flex';
+                document.getElementById('publications-grid').style.display = 'none';
+            }
+            document.getElementById('loading').style.display = 'none';
+
+            const response = await fetch(`/api/publications/paged?page=${page}&pageSize=${pageSize}`);
+            const data = await response.json();
+
+            if (data.publications && data.publications.length > 0) {
+                hasAnyPublication = true;
+                document.getElementById('skeleton-loader').style.display = 'none';
+                document.getElementById('publications-grid').style.display = 'flex';
+
+                const grid = document.getElementById('publications-grid');
+                data.publications.forEach(pub => {
+                    pub.images = pub.images || pub.Images || [];
+                    grid.insertAdjacentHTML('beforeend', renderPublication(pub));
+                });
+                page++;
+                if (data.publications.length < pageSize) allLoaded = true;
+            } else {
+                if (!hasAnyPublication) {
+                    // Si nunca hubo publicaciones, el skeleton sigue visible y el grid oculto
+                    document.getElementById('skeleton-loader').style.display = 'flex';
+                    document.getElementById('publications-grid').style.display = 'none';
+                }
+                allLoaded = true;
+            }
+
+            loading = false;
+        }
+
+        // Scroll infinito
+        window.addEventListener('scroll', () => {
+            if (allLoaded) return;
+            if ((window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 200)) {
+                loadPublications();
+            }
+        });
+
+        // Carga inicial
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPublications();
+        });
+    </script>
+}

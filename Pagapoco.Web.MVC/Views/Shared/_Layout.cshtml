@@ -7,44 +7,52 @@
     <link rel="icon" href="~/logoApp.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/header.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/menu.css" asp-append-version="true" /> <!-- Menú CSS -->
+    <link rel="stylesheet" href="~/css/menu.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/skeleton.css" asp-append-version="true" />
 </head>
 <body>
-    <!-- Header con gradiente -->
-    <header class="pp-main-header">
-        <!-- Logo como botón -->
-        <button class="pp-logo-button">
-            <img src="~/assets/images/header/logo_header.svg" class="pp-header-logo">
-        </button>
-
-        <!-- Barra de búsqueda -->
-        <div class="pp-search-container">
-            <input type="text" placeholder="Buscar tu publicación" class="pp-search-input">
-            <img src="~/assets/images/header/searchBar.svg" class="pp-search-icon">
-        </div>
-
-        <!-- Botones derecho -->
-        <div class="pp-header-buttons">
-            <img src="~/assets/images/header/boton_registrar.svg" class="pp-button-img">
-            <img src="~/assets/images/header/boton_ingresar.svg" class="pp-button-img">
+    <!-- Header principal con gradiente y grilla Bootstrap -->
+    <header class="pp-main-header container-fluid py-2">
+        <div class="row align-items-center">
+            <!-- Logo -->
+            <div class="col-4 col-md-2">
+                <button class="pp-logo-button bg-transparent border-0 p-0">
+                    <img src="~/assets/images/header/logo_header.svg" class="pp-header-logo img-fluid" alt="Logo">
+                </button>
+            </div>
+            <!-- Barra de búsqueda -->
+            <div class="col-8 col-md-6 my-2 my-md-0">
+                <div class="input-group">
+                    <input type="text" placeholder="Buscar tu publicación" class="form-control pp-search-input">
+                    <span class="input-group-text bg-white border-0">
+                        <img src="~/assets/images/header/searchBar.svg" class="pp-search-icon img-fluid" alt="Buscar">
+                    </span>
+                </div>
+            </div>
+            <!-- Botones de registro e ingreso -->
+            <div class="col-12 col-md-4 d-flex justify-content-end mt-2 mt-md-0">
+                <img src="~/assets/images/header/boton_registrar.svg" class="pp-button-img img-fluid me-2" alt="Registrar">
+                <img src="~/assets/images/header/boton_ingresar.svg" class="pp-button-img img-fluid" alt="Ingresar">
+            </div>
         </div>
     </header>
 
-    <!-- Menú rectangular blanco -->
-    <div class="pp-white-bar">
-        <div class="pp-buttons-container">
-            <img src="~/assets/images/menu/bot_city.svg" class="pp-menu-button">
-            <img src="~/assets/images/menu/bot_categories.svg" class="pp-menu-button">
-            <img src="~/assets/images/menu/bot_mysale.svg" class="pp-menu-button">
-            <img src="~/assets/images/menu/bot_sale.svg" class="pp-menu-button">
-            <img src="~/assets/images/menu/bot_favorites.svg" class="pp-menu-button">
-            <img src="~/assets/images/menu/bot_notif.svg" class="pp-menu-button">
+    <!-- Menú horizontal blanco responsivo -->
+    <nav class="pp-white-bar container-fluid py-2">
+        <!-- Menú horizontal blanco con accesos rápidos -->
+        <div class="pp-white-bar">
+            <div class="pp-buttons-container">
+                <!-- Botón "Mis ventas" -->
+                <img src="~/assets/images/menu/bot_mysale.svg" class="pp-menu-button img-fluid" alt="Mis ventas">
+                <!-- Botón "Vender" -->
+                <img src="~/assets/images/menu/bot_sale.svg" class="pp-menu-button img-fluid" alt="Vender">
+            </div>
         </div>
-    </div>
+    </nav>
 
     <!-- Contenido principal -->
-    <div class="container">
+    <div class="container my-4">
         @RenderBody()
     </div>
 
@@ -55,7 +63,6 @@
         </div>
     </footer>
 
-    <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
