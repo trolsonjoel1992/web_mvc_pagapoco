@@ -43,9 +43,9 @@ namespace Pagapoco.API.Controllers
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                new Claim("userId", user.Id.ToString())
-            };
+        new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+        new Claim("userId", user.Id.ToString())
+    };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -60,7 +60,8 @@ namespace Pagapoco.API.Controllers
 
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return Ok(new { token = tokenString });
+            // Modificación: incluir el userId en la respuesta
+            return Ok(new { token = tokenString, userId = user.Id });
         }
 
         // Actualizar usuario (requiere JWT)
@@ -104,27 +105,27 @@ namespace Pagapoco.API.Controllers
         }
 
         // Obtener datos del usuario (requiere JWT)
-[Authorize]
-[HttpGet("{userId}")]
-public ActionResult<User> GetUser(Guid userId)
-{
-    var userIdClaim = User.FindFirst("userId")?.Value;
-    if (userIdClaim == null || userIdClaim != userId.ToString())
-        return Forbid();
+        [Authorize]
+        [HttpGet("{userId}")]
+        public ActionResult<User> GetUser(Guid userId)
+        {
+            var userIdClaim = User.FindFirst("userId")?.Value;
+            if (userIdClaim == null || userIdClaim != userId.ToString())
+                return Forbid();
 
-    var user = _userService.GetById(userId);
-    if (user == null)
-        return NotFound();
+            var user = _userService.GetById(userId);
+            if (user == null)
+                return NotFound();
 
-    // Opcional: puedes mapear a un DTO para no exponer PasswordHash/Salt
-    return Ok(new
-    {
-        user.Id,
-        user.Name,
-        user.Email,
-        user.Phone,
-        user.City
-    });
-}
+            // Opcional: puedes mapear a un DTO para no exponer PasswordHash/Salt
+            return Ok(new
+            {
+                user.Id,
+                user.Name,
+                user.Email,
+                user.Phone,
+                user.City
+            });
+        }
     }
 }
